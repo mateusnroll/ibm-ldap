@@ -12,7 +12,7 @@ passport.use(new ldapStrategy(config))
 passport.initialize()
 
 module.exports = function(req, res, next) {
-    passport.authenticate('ldapauth', {session: false}, function(err, user, info) {
+    passport.authenticate('ldapauth', {session: false}, (err, user, info) => {
 		if (err || !user)
         	return res.sendStatus(401)
       	
@@ -27,5 +27,3 @@ module.exports = function(req, res, next) {
 		next();
     })(req, res, next);
   }
-}
-
