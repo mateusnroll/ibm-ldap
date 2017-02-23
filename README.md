@@ -86,3 +86,6 @@ Only the properties below will be accepted
 }
 ```
 
+## Contributors
+- [@mateusnroll](https://github.com/mateusnroll)
+- [@niightly](https://github.com/niightly)
