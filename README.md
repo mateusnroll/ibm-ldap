@@ -1,33 +1,56 @@
 ## Install
 Run `npm install ibm-ldap --save`
 
-## Methods
-Below follow a description about each method that was included on the app.
-
-#### LDAP.Initialize
-This method is __mandatory__ it will configure and initialize the passport module.
-
-|Params      | Type | Description
-| ------       | ---     | ---
-| `attributes` | Array | *Optional*. Contains all attributes you want to retrieve from LDAP
-
-> If attributes is left undefined it will retrieve all attributes available on LDAP.
-
-#### LDAP.authenticate
-This method is __mandatory__ for the routes you want to intercept and apply the login.
-
-> If attributes is left undefined it will retrieve all attributes available on LDAP.
+## Information of Require
+The module will accept 2 types of parameters, one as `String` and other as `Array`. Based on its type the module will set properties and filter properly.
 
 ## Usage
+
+###### Default (Auth: Email, Attr: All)
 Below follows a simple example about how to use it.
 ```javascript
-const ldap = require('ibm-ldap')
+const ldap = require('ibm-ldap')()
 const controller = require('path/to/file')
 
-ldap.initialize(['cn', 'uid', 'mail', 'employeeCountryCode'])
-
-routes.post('/login', ldap.authenticate, controller.login)
+routes.post('/login', ldap, controller.login)
 ```
+
+###### Example 1 (Auth: Email, Attr: Specific)
+Below follows a simple example about how to use it.
+```javascript
+const ldap = require('ibm-ldap')(['cn', 'uid', 'mail', 'employeeCountryCode'])
+const controller = require('path/to/file')
+
+routes.post('/login', ldap, controller.login)
+```
+
+###### Example 2 (Auth: UID, Attr: All)
+Below follows a simple example about how to use it.
+```javascript
+const ldap = require('ibm-ldap')('uid')
+const controller = require('path/to/file')
+
+routes.post('/login', ldap, controller.login)
+```
+
+###### Example 3 (Auth: UID, Attr: Specific)
+Below follows a simple example about how to use it.
+```javascript
+const ldap = require('ibm-ldap')(['cn', 'uid', 'mail', 'employeeCountryCode'], 'uid')
+const controller = require('path/to/file')
+
+routes.post('/login', ldap, controller.login)
+```
+
+###### Example 4 (Auth: UID, Attr: Specific)
+Below follows a simple example about how to use it.
+```javascript
+const ldap = require('ibm-ldap')('uid', ['cn', 'uid', 'mail', 'employeeCountryCode'])
+const controller = require('path/to/file')
+
+routes.post('/login', ldap, controller.login)
+```
+
 
 ## Allowed Attributes
 Only the properties below will be accepted
