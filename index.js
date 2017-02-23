@@ -23,17 +23,8 @@ class LDAP {
     } }
   }
 
-  setAttributes(attributes){
-    if (attributes) {
-      let tmpAttributes = []
-      for (let attribute of attributes) {
-        if (allowedAttributes.indexOf(attribute) > 0) { tmpAttributes.push(attribute) }
-      }
-      this.config.server.searchAttributes = tmpAttributes
-    }
-  }
-
-  initialize(attributes) {
+  initialize() {
+    console.log(this.config);
     passport.use(new ldapStrategy(this.config))
     passport.initialize()
   }
@@ -49,15 +40,52 @@ class LDAP {
       next();
     })(req, res, next);
   }
+
+  identifyAndSetParameters(param1, param2){
+    let filter
+    let attributes
+    if (Array.isArray(param1) && Array.isArray(param2)) {
+      attributes = param1
+    } else if (Array.isArray(param1)) {
+      attributes = param1
+      filter = param2
+    } else if (Array.isArray(param2)) {
+      attributes = param2
+      filter = param1
+    }
+    
+    this._setAttributes(attributes)
+    this._setSearchFilter(filter)
+  }
+
+  _setAttributes(attributes){
+    if (attributes) {
+      let tmpAttributes = []
+      for (let attribute of attributes) {
+        if (allowedAttributes.indexOf(attribute) > 0) { tmpAttributes.push(attribute) }
+      }
+      this.config.server.searchAttributes = tmpAttributes
+    }
+  }
+
+  _setSearchFilter(param){
+    if (param && typeof param ==='string' && param.toLowerCase() === 'uid') { 
+      this.config.server.searchFilter = '(uid={{username}})' 
+    } else {
+      this.config.server.searchFilter = '(mail={{username}})'
+    }
+  }
 }
 
 /**
  * Allow to return the module instantiated without using new when require the module.
  */
 const objectLDAP = new LDAP()
-function instantiate(attributes) {
-  if(attributes) { objectLDAP.setAttributes(attributes) }
-  return objectLDAP
+function authenticate(param1, param2) {
+  objectLDAP.identifyAndSetParameters(param1, param2)
+  objectLDAP.initialize()
+ 
+  return objectLDAP.authenticate
 }
 
-module.exports = instantiate
+module.exports = authenticate
