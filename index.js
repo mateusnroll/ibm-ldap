@@ -24,7 +24,6 @@ class LDAP {
   }
 
   initialize() {
-    console.log(this.config);
     passport.use(new ldapStrategy(this.config))
     passport.initialize()
   }
@@ -35,7 +34,6 @@ class LDAP {
       if (Array.isArray(user.cn) && user.cn.length > 0) { user.cn = user.cn[0] }
       if (Array.isArray(user.mail) && user.mail.length > 0){ user.mail = user.mail[0] }
 
-      console.log(user);
       req.user = user
       next();
     })(req, res, next);
